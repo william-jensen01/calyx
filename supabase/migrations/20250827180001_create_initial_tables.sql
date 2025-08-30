@@ -11,7 +11,7 @@ CREATE TABLE users (
 CREATE TABLE sessions (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id           UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  token             VARCHAR(255) NOT NULL UNIQUE,
+  token             TEXT NOT NULL UNIQUE,
   expires_at        TIMESTAMPTZ NOT NULL,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -21,9 +21,10 @@ CREATE TABLE events (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id           UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title             VARCHAR(255) NOT NULL,
+  description       TEXT,
+  location..........TEXT,
   start_time        TIMESTAMPTZ NOT NULL,
   end_time          TIMESTAMPTZ NOT NULL,
-  description       TEXT,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   

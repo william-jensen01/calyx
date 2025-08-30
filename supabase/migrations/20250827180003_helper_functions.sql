@@ -1,11 +1,3 @@
--- Function to set user context for RLS
-CREATE OR REPLACE FUNCTION set_user_context(user_uuid UUID)
-RETURNS void AS $$
-BEGIN
-  PERFORM set_config('app.current_user_id', user_uuid::text, true);
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
 -- Function to clean up expired sessions (can be called by cron job)
 CREATE OR REPLACE FUNCTION cleanup_expired_sessions()
 RETURNS integer AS $$
