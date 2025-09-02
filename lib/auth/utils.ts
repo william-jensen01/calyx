@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
-import { SESSION_COOKIE_NAME, SESSION_EXPIRES_IN } from "./types";
+import { SESSION_EXPIRES_IN } from "./types";
 import type { DeviceInfo } from "./types";
 
 // ===============================
@@ -35,36 +34,6 @@ export function generateSessionToken(): string {
 
 export function calculateSessionExpiry(): Date {
   return new Date(Date.now() + SESSION_EXPIRES_IN);
-}
-
-// ================================
-// MARK: Cookie
-// ================================
-
-export async function setSessionCookie(
-  token: string,
-  expiresAt?: Date
-): Promise<void> {
-  const cookieStore = await cookies();
-  const expires = expiresAt || calculateSessionExpiry();
-
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
-    expires,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-  });
-}
-
-export async function getSessionCookie(): Promise<string | null> {
-  const cookieStore = await cookies();
-  return cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
-}
-
-export async function deleteSessionCookie(): Promise<void> {
-  const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE_NAME, "", { expires: new Date(0) });
 }
 
 // ===============================

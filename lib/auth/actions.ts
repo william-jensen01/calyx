@@ -2,11 +2,15 @@
 
 import { deleteUserSession, signOut } from ".";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { signIn, signUp, getCurrentUser } from "@/lib/auth";
-import { DeviceInfo, SessionDeletionResult } from "@/lib/auth/types";
+import {
+  DeviceInfo,
+  SESSION_COOKIE_NAME,
+  SessionDeletionResult,
+} from "@/lib/auth/types";
 import { getUserSessions } from "../db/sessions";
-import { deleteSessionCookie } from "./utils";
-import { revalidatePath } from "next/cache";
+import { calculateSessionExpiry } from "./utils";
 
 export async function loginAction(
   email: string,
@@ -76,6 +80,36 @@ export async function signOutAction() {
 
   // Clear the cookie manually as fallback
   deleteSessionCookie();
+}
+
+// ================================
+// MARK: Cookie
+// ================================
+
+export async function setSessionCookie(
+  token: string,
+  expiresAt?: Date
+): Promise<void> {
+  const cookieStore = await cookies();
+  const expires = expiresAt || calculateSessionExpiry();
+
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
+    expires,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
+export async function getSessionCookie(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
+}
+
+export async function deleteSessionCookie(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set(SESSION_COOKIE_NAME, "", { expires: new Date(0) });
 }
 
 // Get current user's sessions

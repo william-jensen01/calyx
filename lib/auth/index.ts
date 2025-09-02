@@ -9,13 +9,13 @@ import type {
   DeviceInfo,
   SessionDeletionResult,
 } from "./types";
+import { verifyPassword } from "./utils";
+import { createUser } from "@/lib/db/users";
 import {
-  verifyPassword,
   setSessionCookie,
   getSessionCookie,
   deleteSessionCookie,
-} from "./utils";
-import { createUser } from "@/lib/db/users";
+} from "./actions";
 import {
   createSession,
   validateSession,
