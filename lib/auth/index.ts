@@ -40,7 +40,7 @@ export async function signIn(
     .from("users")
     .select("id, email, password_hash, name, created_at")
     .eq("email", email)
-    .single();
+    .maybeSingle();
 
   if (error) {
     throw new Error("An unexpected error occurred");
