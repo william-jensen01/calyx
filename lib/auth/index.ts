@@ -1,4 +1,5 @@
 "use server";
+
 import {
   createServiceClient,
   createUserContextClient,
@@ -9,7 +10,7 @@ import type {
   DeviceInfo,
   SessionDeletionResult,
 } from "./types";
-import { verifyPassword } from "./utils";
+import { getDeviceInfoFromHeaders, verifyPassword } from "./utils";
 import { createUser } from "@/lib/db/users";
 import {
   setSessionCookie,
@@ -22,7 +23,9 @@ import {
   deleteSession,
   getUserSessions,
   deleteSessionById,
+  updateSessionDevice,
 } from "@/lib/db/sessions";
+import { redirect } from "next/navigation";
 
 // ===============================
 // MARK: High-level auth functions
@@ -129,10 +132,39 @@ export async function isAuthenticated(): Promise<boolean> {
 
 // For server components that require auth
 export async function requireAuth(): Promise<User> {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("Authentication required");
+  "use server";
+  const token = await getSessionCookie();
+  if (!token) {
+    redirect("/auth/login?reason=no-session");
   }
+
+  let ipAddress, deviceInfo;
+  let sessionData;
+  try {
+    // Get device info from middleware headers
+    const info = await getDeviceInfoFromHeaders();
+    ipAddress = info.ipAddress;
+    deviceInfo = info.deviceInfo;
+
+    sessionData = await validateSession(token);
+  } catch (error) {
+    console.error("requireAuth: error found:", error);
+  }
+
+  if (!sessionData?.user || !sessionData?.session) {
+    redirect("/auth/login?reason=invalid-session");
+  }
+
+  const { user, session } = sessionData;
+
+  try {
+    // Update session with current device info and activity
+    await updateSessionDevice(session.token, ipAddress, deviceInfo);
+  } catch (error) {
+    console.error("requireAuth: Error updating session device:", error);
+    // Don't redirect on device update failure, just log it
+  }
+
   return user;
 }
 
@@ -187,6 +219,7 @@ export async function deleteUserSession(
 
   if (isDeletingCurrentSession) {
     // Clear the session cookie since we just deleted our own session
+    console.log("deleteUserSession: deleting session cookie");
     await deleteSessionCookie();
 
     return {
@@ -220,6 +253,7 @@ export async function deleteSessionByToken(
 
   if (isDeletingCurrentSession) {
     // Clear the session cookie since we just deleted our own session
+    console.log("deleteSessionByToken: deleting session cookie");
     await deleteSessionCookie();
 
     return {

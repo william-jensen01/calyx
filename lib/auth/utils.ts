@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { headers } from "next/headers";
 import { SESSION_EXPIRES_IN } from "./types";
 import type { DeviceInfo } from "./types";
 
@@ -186,4 +187,24 @@ export function getDeviceDisplayName(session: {
   } else {
     return `${browser || "Browser"} on ${os || "Unknown"}`;
   }
+}
+
+// Get device info from middleware-injected headers
+export async function getDeviceInfoFromHeaders(): Promise<{
+  ipAddress: string;
+  deviceInfo: DeviceInfo;
+}> {
+  const headerList = await headers();
+
+  const ipAddress = headerList.get("x-client-ip") || "";
+  const deviceInfoStr = headerList.get("x-device-info");
+
+  let deviceInfo: DeviceInfo;
+  try {
+    deviceInfo = deviceInfoStr ? JSON.parse(deviceInfoStr) : { userAgent: "" };
+  } catch (error) {
+    deviceInfo = { userAgent: "" };
+  }
+
+  return { ipAddress, deviceInfo };
 }

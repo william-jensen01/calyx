@@ -4,23 +4,34 @@ import { deleteUserSession, signOut } from ".";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { signIn, signUp, getCurrentUser } from "@/lib/auth";
-import {
-  DeviceInfo,
-  SESSION_COOKIE_NAME,
-  SessionDeletionResult,
-} from "@/lib/auth/types";
+import { SESSION_COOKIE_NAME, SessionDeletionResult } from "@/lib/auth/types";
 import { getUserSessions } from "../db/sessions";
-import { calculateSessionExpiry } from "./utils";
+import { calculateSessionExpiry, getDeviceInfoFromHeaders } from "./utils";
 
 export async function loginAction(
-  email: string,
-  password: string,
-  ipAddress?: string,
-  deviceInfo?: DeviceInfo
+  prevState: {
+    error?: string;
+    success?: boolean;
+    redirect?: string;
+  },
+  formData: FormData
 ) {
-  if (!email || !password) {
-    throw new Error("Email and password are required");
+  let email, password;
+  try {
+    email = formData.get("email") as string;
+    password = formData.get("password") as string;
+
+    if (!email || !password) {
+      throw new Error("Email and password are required");
+    }
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Login failed",
+      success: false,
+    };
   }
+
+  const { ipAddress, deviceInfo } = await getDeviceInfoFromHeaders();
 
   try {
     const { user, session } = await signIn(
@@ -30,23 +41,49 @@ export async function loginAction(
       deviceInfo
     );
 
-    return user;
-    // redirect(`/protected/${user?.id}`);
+    return { error: "", success: true, redirect: `/protected` };
   } catch (error) {
-    console.error("Login error:", error);
-    throw error;
+    return {
+      error: error instanceof Error ? error.message : "Login failed",
+      success: false,
+    };
   }
 }
 
 export async function signUpAction(
-  name: string,
-  email: string,
-  password: string,
-  ipAddress?: string,
-  deviceInfo?: DeviceInfo
+  prevState: {
+    error?: string;
+    success?: boolean;
+    redirect?: string;
+  },
+  formData: FormData
 ) {
-  if (!email || !password || !name) {
-    throw new Error("All fields are required");
+  let name, email, password;
+  try {
+    name = formData.get("name") as string;
+    email = formData.get("email") as string;
+    password = formData.get("password") as string;
+
+    if (!email || !password || !name) {
+      throw new Error("All fields are required");
+    }
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Sign up failed",
+      success: false,
+    };
+  }
+
+  let ipAddress, deviceInfo;
+  try {
+    const info = await getDeviceInfoFromHeaders();
+    ipAddress = info.ipAddress;
+    deviceInfo = info.deviceInfo;
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Sign up failed",
+      success: false,
+    };
   }
 
   try {
@@ -58,11 +95,12 @@ export async function signUpAction(
       deviceInfo
     );
 
-    // redirect(`/protected/${user?.id}`);
-    return user;
+    return { error: "", success: true, redirect: `/protected` };
   } catch (error) {
-    console.error("Sign up error:", error);
-    throw error;
+    return {
+      error: error instanceof Error ? error.message : "Sign up failed",
+      success: false,
+    };
   }
 }
 
@@ -74,8 +112,7 @@ export async function signOutAction() {
     // 3. Clearing session cookie
     await signOut();
   } catch (error) {
-    console.error("Sign out action error:", error);
-    throw error;
+    console.error("signOutAction error:", error);
   }
 
   // Clear the cookie manually as fallback
