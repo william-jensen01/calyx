@@ -58,14 +58,18 @@ export async function signUpAction(
   },
   formData: FormData
 ) {
-  let name, email, password;
+  let name, email, password, repeatPassword;
   try {
     name = formData.get("name") as string;
     email = formData.get("email") as string;
     password = formData.get("password") as string;
+    repeatPassword = formData.get("repeat-password") as string;
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !repeatPassword) {
       throw new Error("All fields are required");
+    }
+    if (password !== repeatPassword) {
+      throw new Error("Passwords do not match");
     }
   } catch (error) {
     return {
