@@ -41,7 +41,7 @@ export async function loginAction(
       deviceInfo
     );
 
-    return { error: "", success: true, redirect: `/protected` };
+    return { error: "", success: true, redirect: `/u/${user?.url_token}` };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Login failed",
@@ -99,7 +99,7 @@ export async function signUpAction(
       deviceInfo
     );
 
-    return { error: "", success: true, redirect: `/protected` };
+    return { error: "", success: true, redirect: `/u/${user?.url_token}` };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Sign up failed",

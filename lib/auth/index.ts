@@ -41,7 +41,7 @@ export async function signIn(
 
   const { data: userWithPassword, error } = await supabase
     .from("users")
-    .select("id, email, password_hash, name, created_at")
+    .select("id, email, password_hash, name, created_at, url_token")
     .eq("email", email)
     .maybeSingle();
 

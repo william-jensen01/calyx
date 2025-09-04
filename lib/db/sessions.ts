@@ -64,7 +64,8 @@ export async function validateSession(
           id,
           email,
           name,
-          created_at
+          created_at,
+          url_token
         )
       `
     )
@@ -168,7 +169,8 @@ export async function validateSessionToken(
             id,
             email,
             name,
-            created_at
+            created_at,
+            url_token
           )
         `
       )

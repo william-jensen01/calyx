@@ -20,7 +20,7 @@ export async function createUser(
       password_hash: passwordHash,
       name,
     })
-    .select("id, email, name, created_at")
+    .select("id, email, name, created_at, url_token")
     .single();
 
   if (error) {
@@ -39,9 +39,24 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
   const { data, error } = await supabase
     .from("users")
-    .select("id, email, name, created_at")
+    .select("id, email, name, created_at, url_token")
     .eq("email", email)
     .single();
+
+  if (error || !data) return null;
+  return data;
+}
+
+export async function getUserByUrlToken(
+  urlToken: string
+): Promise<User | null> {
+  const supabase = createServiceClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, email, name, created_at, url_token")
+    .eq("url_token", urlToken)
+    .maybeSingle();
 
   if (error || !data) return null;
   return data;
@@ -54,7 +69,7 @@ export async function getUserWithPassword(
 
   const { data, error } = await supabase
     .from("users")
-    .select("id, email, name, created_at, password_hash")
+    .select("id, email, name, created_at, url_token, password_hash")
     .eq("email", email)
     .single();
 
@@ -75,7 +90,7 @@ export async function updateUserProfile(
     .from("users")
     .update(updates)
     .eq("id", userId)
-    .select("id, email, name, created_at")
+    .select("id, email, name, created_at, url_token")
     .single();
 
   if (error) throw new Error("Failed to update user profile");
