@@ -72,23 +72,6 @@ export async function createAPIToken(
   return token;
 }
 
-// MARK: Get Token by Hash (for validation)
-export async function getAPITokenByHash(
-  tokenHash: string
-): Promise<APIToken | null> {
-  const supabase = createServiceClient();
-
-  const { data, error } = await supabase
-    .from("api_tokens")
-    .select("*")
-    .eq("token_hash", tokenHash)
-    .is("revoked_at", null) // Only active tokens
-    .single();
-
-  if (error || !data) return null;
-  return data;
-}
-
 // MARK: Get Token by ID
 export async function getAPITokenById(
   tokenId: string

@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
 import {
   createAPIToken as dbCreateAPIToken,
-  getAPITokenByHash,
   updateTokenLastUsed,
   getUserAPITokens,
   revokeAPIToken as dbRevokeAPIToken,
