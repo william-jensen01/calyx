@@ -57,7 +57,7 @@ interface ScheduleData {
 }
 
 interface CreatedEvent {
-  id: string;
+  id_prefix: string;
   title: string;
   start_time: string;
   end_time: string;
@@ -66,8 +66,19 @@ interface CreatedEvent {
 }
 
 interface FailedCreate {
-  shift: ScheduleShift;
+  employeeName?: string;
+  shift?: ScheduleShift;
   error: string;
+}
+
+interface ProcessedUser {
+  employeeName: string;
+  userPrefix: string;
+  shiftsProcessed: number;
+  eventsDeleted: number;
+  eventsFailedToDelete: string[];
+  eventsCreated: number;
+  eventsFailedToCreate: FailedCreate[];
 }
 
 // Convert a shift to an Event
@@ -134,9 +145,9 @@ export const POST = withAuth(
       );
 
       // Track results for each user
-      const processedUsers = [];
-      const createdEvents = [];
-      const errors = [];
+      const processedUsers: ProcessedUser[] = [];
+      const createdEvents: CreatedEvent[] = [];
+      const errors: FailedCreate[] = [];
 
       for (const employeeData of scheduleData.employeeData) {
         const employeeName = employeeData.employeeName;
@@ -214,7 +225,7 @@ export const POST = withAuth(
           if (result.status === "fulfilled") {
             createdCount++;
             createdEventsForUser.push({
-              id: result.value.id,
+              id_prefix: result.value.id.substring(0, 8),
               title: result.value.title,
               start_time: result.value.start_time,
               end_time: result.value.end_time,
@@ -231,7 +242,7 @@ export const POST = withAuth(
 
         processedUsers.push({
           employeeName,
-          userId: user.id,
+          userPrefix: user.id.substring(0, 8),
           shiftsProcessed: employeeData.shifts.length,
           eventsDeleted: successfulDeletes.size,
           eventsFailedToDelete: failedDeletes.map((e) => e.id),
@@ -256,7 +267,7 @@ export const POST = withAuth(
         },
         processedUsers,
         createdEvents: createdEvents.map((event) => ({
-          id: event.id,
+          id_prefix: event.id_prefix,
           title: event.title,
           start_time: event.start_time,
           end_time: event.end_time,
