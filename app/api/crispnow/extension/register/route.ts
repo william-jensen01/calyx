@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const { token, tokenData } = await createAPIToken({
       name: `Crispnow Extension v${extensionVersion} (${deviceId})`,
-      scopes: ["events:read", "events:write"],
+      scopes: ["events:read", "events:write", "users:write"],
       user_id: null,
       expires_in_days: 365, // Long-lived
     });
