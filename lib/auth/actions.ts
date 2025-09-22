@@ -34,12 +34,7 @@ export async function loginAction(
   const { ipAddress, deviceInfo } = await getDeviceInfoFromHeaders();
 
   try {
-    const { user, session } = await signIn(
-      email,
-      password,
-      ipAddress,
-      deviceInfo
-    );
+    const { user } = await signIn(email, password, ipAddress, deviceInfo);
 
     return { error: "", success: true, redirect: `/u/${user?.url_token}` };
   } catch (error) {
@@ -91,13 +86,7 @@ export async function signUpAction(
   }
 
   try {
-    const { user, session } = await signUp(
-      email,
-      password,
-      name,
-      ipAddress,
-      deviceInfo
-    );
+    const { user } = await signUp(email, password, name, ipAddress, deviceInfo);
 
     return { error: "", success: true, redirect: `/u/${user?.url_token}` };
   } catch (error) {

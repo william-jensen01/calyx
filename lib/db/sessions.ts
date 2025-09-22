@@ -10,7 +10,6 @@ import {
   SESSION_REFRESH_THRESHOLD,
   MAX_SESSIONS_PER_USER,
 } from "@/lib/auth/types";
-import { Update } from "next/dist/build/swc/types";
 
 // MARK: createSession
 export async function createSession(
@@ -147,7 +146,7 @@ export async function extendSession(
         expires_at: newExpiresAt.toISOString(),
       })
       .eq("token", token);
-  } catch (error) {
+  } catch {
     // Don't throw - this is not critical for the request to continue
   }
 }
@@ -195,7 +194,7 @@ export async function validateSessionToken(
       user: data.users as User,
       session: data,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

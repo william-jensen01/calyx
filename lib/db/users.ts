@@ -5,6 +5,12 @@ import {
 import { hashPassword } from "@/lib/auth/utils";
 import type { User } from "@/lib/auth/types";
 
+type UserUpdatableFields = {
+  name?: string;
+  email?: string;
+  password_hash?: string;
+};
+
 export async function createUser(
   email: string,
   password: string,
@@ -80,7 +86,7 @@ export async function getUserWithPassword(
 export async function updateUserProfile(
   userId: string,
   email: string,
-  updates: any
+  updates: UserUpdatableFields
 ): Promise<User> {
   if (!userId || !email || !updates) throw new Error("Invalid user data");
 

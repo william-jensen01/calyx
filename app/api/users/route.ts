@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthContext, withAuth } from "@/lib/auth/api-tokens/middleware";
+import { withAuth } from "@/lib/auth/api-tokens/middleware";
 import { createUser } from "@/lib/db/users";
 import type { User } from "@/lib/auth/types";
 
@@ -21,7 +21,7 @@ interface FailedUser {
 }
 
 export const POST = withAuth(
-  async (request: NextRequest, auth: AuthContext) => {
+  async (request: NextRequest) => {
     const { users }: { users: UserData[] } = await request.json();
     try {
       if (users.length <= 0) {

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { authenticateAPIRequest } from "./index";
 
 export interface AuthContext {
@@ -158,11 +158,10 @@ export async function POST(request: NextRequest) {
 /**
  * Create a route handler that requires specific authentication
  */
-export function withAuth<T extends any[]>(
+export function withAuth(
   handler: (
     request: NextRequest,
-    authContext: AuthContext,
-    ...args: T
+    authContext: AuthContext
   ) => Promise<Response>,
   options: {
     requireScope?: string;
@@ -170,7 +169,7 @@ export function withAuth<T extends any[]>(
     allowSessions?: boolean;
   } = {}
 ) {
-  return async (request: NextRequest, ...args: T): Promise<Response> => {
+  return async (request: NextRequest): Promise<Response> => {
     try {
       const authContext = await requireAuth(request);
 
@@ -203,7 +202,7 @@ export function withAuth<T extends any[]>(
         );
       }
 
-      return await handler(request, authContext, ...args);
+      return await handler(request, authContext);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Authentication failed";

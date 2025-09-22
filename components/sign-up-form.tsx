@@ -13,14 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useActionState, useEffect } from "react";
+import { useActionState, useEffect } from "react";
 import { signUpAction } from "@/lib/auth/actions";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [error, setError] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(signUpAction, {
     error: "",
     success: false,
@@ -29,13 +28,10 @@ export function SignUpForm({
   const router = useRouter();
 
   useEffect(() => {
-    if (state.error) {
-      setError(state.error);
-    }
     if (state.success && state.redirect) {
       router.push(state.redirect);
     }
-  }, [state]);
+  }, [state.success, state.redirect, router]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -84,7 +80,9 @@ export function SignUpForm({
                   required
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {state.error && (
+                <p className="text-sm text-red-500">{state.error}</p>
+              )}
               <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? "Creating an account..." : "Sign up"}
               </Button>

@@ -108,7 +108,9 @@ export function decryptToken(encryptedData: EncryptedTokenData): string {
 /**
  * Validate encrypted token data structure
  */
-export function isValidEncryptedData(data: any): data is EncryptedTokenData {
+export function isValidEncryptedData(
+  data: Partial<EncryptedTokenData>
+): data is EncryptedTokenData {
   return (
     data &&
     typeof data === "object" &&

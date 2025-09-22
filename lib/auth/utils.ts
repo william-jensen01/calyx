@@ -202,7 +202,7 @@ export async function getDeviceInfoFromHeaders(): Promise<{
   let deviceInfo: DeviceInfo;
   try {
     deviceInfo = deviceInfoStr ? JSON.parse(deviceInfoStr) : { userAgent: "" };
-  } catch (error) {
+  } catch {
     deviceInfo = { userAgent: "" };
   }
 

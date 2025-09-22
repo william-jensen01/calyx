@@ -67,7 +67,13 @@ export async function signIn(
   );
   await setSessionCookie(session.token, new Date(session.expires_at));
 
-  const { password_hash, ...user } = userWithPassword;
+  const user = {
+    id: userWithPassword.id,
+    email: userWithPassword.email,
+    name: userWithPassword.name,
+    created_at: userWithPassword.created_at,
+    url_token: userWithPassword.url_token,
+  };
 
   return { user, session };
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthContext, withAuth } from "@/lib/auth/api-tokens/middleware";
+import { withAuth } from "@/lib/auth/api-tokens/middleware";
 import {
   deleteUserEvent,
   createUserEvent,
@@ -11,6 +11,7 @@ import type { Event, EventData } from "@/lib/db/events";
 interface ScheduleShift {
   date: string;
   dayOfWeek: string;
+  day: number;
   employeeName: string;
   role: string;
   startTime: string;
@@ -42,17 +43,13 @@ interface ScheduleData {
   metadata: {
     totalShifts: number;
     totalEmployees: number;
-    totalRoles: number;
     dateRange: {
       start: string;
       end: string;
     };
     extractedAt: string;
     employees: string[];
-    roles: string[];
   };
-  scheduleData: any[];
-  rawShifts: ScheduleShift[];
   employeeData: EmployeeData[];
 }
 
@@ -102,22 +99,22 @@ function isSameEvent(a: Event, b: EventData): boolean {
 }
 
 export const POST = withAuth(
-  async (request: NextRequest, auth: AuthContext) => {
+  async (request: NextRequest) => {
     try {
       const scheduleData: ScheduleData = await request.json();
 
       // Validate the schedule data structure
       if (
         !scheduleData.metadata ||
+        !scheduleData.metadata.hasOwnProperty("totalShifts") ||
+        !scheduleData.metadata.hasOwnProperty("totalEmployees") ||
         !scheduleData.metadata.employees ||
         !scheduleData.metadata.dateRange ||
-        !scheduleData.rawShifts ||
         !scheduleData.employeeData
       ) {
         return NextResponse.json(
           {
-            error:
-              "Invalid schedule data format. Missing metadata, rawShifts, or dateRange.",
+            error: "Invalid schedule data format.",
           },
           { status: 400 }
         );
@@ -258,8 +255,8 @@ export const POST = withAuth(
         success: true,
         summary: {
           dateRange: { startDate, endDate },
-          totalShiftsInData: scheduleData.rawShifts.length,
-          employeesInSchedule: scheduleData.metadata.employees.length,
+          totalShiftsInData: scheduleData.metadata.totalShifts,
+          employeesInSchedule: scheduleData.metadata.totalEmployees,
           usersFound: foundUsers.length,
           usersProcessed: processedUsers.length,
           totalEventsCreated: createdEvents.length,

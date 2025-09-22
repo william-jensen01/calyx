@@ -13,14 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { loginAction } from "@/lib/auth/actions";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [error, setError] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(loginAction, {
     error: "",
     success: false,
@@ -29,13 +28,10 @@ export function LoginForm({
   const router = useRouter();
 
   useEffect(() => {
-    if (state.error) {
-      setError(state.error);
-    }
     if (state.success && state.redirect) {
       router.push(state.redirect);
     }
-  }, [state]);
+  }, [state.success, state.redirect, router]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -71,7 +67,9 @@ export function LoginForm({
                 </div>
                 <Input id="password" name="password" type="password" required />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {state.error && (
+                <p className="text-sm text-red-500">{state.error}</p>
+              )}
               <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? "Logging in..." : "Login"}
               </Button>

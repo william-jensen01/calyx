@@ -41,7 +41,7 @@ export async function GET(
 function generateICalendar(events: Event[], userName: string): string {
   const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
-  let ics = [
+  const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     `PRODID:-//Calyx Calendar//${escapeICalText(userName)}//EN`,
