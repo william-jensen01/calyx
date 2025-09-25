@@ -26,6 +26,7 @@ import {
   updateSessionDevice,
 } from "@/lib/db/sessions";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 // ===============================
 // MARK: High-level auth functions
@@ -104,13 +105,18 @@ export async function signOut(): Promise<void> {
 // MARK: Convenience
 // ===============================
 
+// Create a cached version of validateSession
+const validateSessionCached = cache(async (token: string) => {
+  return await validateSession(token);
+});
+
 export async function getCurrentSession(): Promise<SessionValidationResult> {
   const token = await getSessionCookie();
   if (!token) {
     return { user: null, session: null };
   }
 
-  const result = await validateSession(token);
+  const result = await validateSessionCached(token);
 
   // Update cookie if session was extended
   if (result.session?.fresh) {
@@ -146,13 +152,14 @@ export async function requireAuth(): Promise<User> {
 
   let ipAddress, deviceInfo;
   let sessionData;
+
   try {
     // Get device info from middleware headers
     const info = await getDeviceInfoFromHeaders();
     ipAddress = info.ipAddress;
     deviceInfo = info.deviceInfo;
 
-    sessionData = await validateSession(token);
+    sessionData = await validateSessionCached(token);
   } catch (error) {
     console.error("requireAuth: error found:", error);
   }
