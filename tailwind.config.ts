@@ -57,6 +57,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        "geist-sans": ["var(--font-geist-sans)"],
+        bricolage: ["var(--font-bricolage-grotesque)"],
+        main: ["var(--font-bricolage-grotesque)"],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
