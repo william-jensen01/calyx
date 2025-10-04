@@ -26,18 +26,18 @@ export async function Hero() {
         <p className="text-lg md:text-2xl lg:text-2xl font-[300] leading-relaxed mb-10">
           Your schedule is{" "}
           <span className="font-[600] italic text-hero-accent">trapped</span> -
-          locked like a flower bud waiting for spring. You know it's all there.
-          Every appointment. Every shift. Every deadline. Every commitment you
-          need to honor.{" "}
+          locked like a flower bud waiting for spring. You know it&apos;s all
+          there. Every appointment. Every shift. Every deadline. Every
+          commitment you need to honor.{" "}
           <strong className="italic font-[600] text-hero-accent">
-            But you can't actually see it where you need it.
+            But you can&apos;t actually see it where you need it.
           </strong>
         </p>
 
         {/* Solution */}
         <p className="text-xl md:text-3xl lg:text-3xl leading-relaxed mb-4 font-[300]">
           <span className="font-semibold text-hero-accent">Calyx</span> opens up
-          what's locked away,{" "}
+          what&apos;s locked away,{" "}
           <strong className="italic font-[600] text-hero-accent">
             revealing the schedule you need to see.
           </strong>
