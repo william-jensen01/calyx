@@ -11,6 +11,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Greens
+        cream: "hsl(var(--clr-cream))",
+        mint: "hsl(var(--clr-mint))",
+        sage: "hsl(var(--clr-sage))",
+        leaf: "hsl(var(--clr-leaf))",
+        moss: "hsl(var(--clr-moss))",
+        forest: "hsl(var(--clr-forest))",
+        pine: "hsl(var(--clr-pine))",
+
+        // Browns
+        sand: "hsl(var(--clr-sand))",
+        wheat: "hsl(var(--clr-wheat))",
+        amber: "hsl(var(--clr-amber))",
+        clay: "hsl(var(--clr-clay))",
+        bark: "hsl(var(--clr-bark))",
+        walnut: "hsl(var(--clr-walnut))",
+        soil: "hsl(var(--clr-soil))",
+
+        "hero-accent": "hsl(var(--hero-accent))",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -22,11 +42,11 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary), <alpha-value>)",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--secondary), <alpha-value>)",
           foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {

@@ -4,24 +4,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --clr-cream: 42, 39%, 94%; /* #F5F1E8 */
+    --clr-mint: 122, 38%, 84%; /* #C8E6C9 */
+    --clr-sage: 120, 20%, 72%; /* #A8C5A8 */
+    --clr-leaf: 90, 33%, 50%; /* #7FA855 */
+    --clr-moss: 102, 21%, 46%; /* #6B8E5C */
+    --clr-forest: 134, 15%, 27%; /* #3A4F3F */
+    --clr-pine: 124, 16%, 21%; /* #2D3E2E */
+    --clr-emerald: 120, 15%, 5%; /* #0b0f0b */
+
+    --clr-sand: 38, 41%, 85%; /* #E8DCC8 */
+    --clr-wheat: 38, 42%, 75%; /* #D9C5A3 */
+    --clr-amber: 31, 53%, 64%; /* #D4A574 */
+    --clr-clay: 33, 35%, 57%; /* #B8956A */
+    --clr-bark: 35, 32%, 41%; /* #8B6F47 */
+    --clr-walnut: 31, 24%, 34%; /* #6B5742 */
+    --clr-soil: 29, 17%, 25%; /* #4A3F35 */
+
+    --clr-rose: 343.76 100% 39%;
+    --clr-pink: 328.25 92% 58%;
+
+    --background: var(--clr-cream);
+    --foreground: var(--clr-forest);
+
+    --hero-accent: var(--clr-leaf);
+
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: var(--clr-forest);
+
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+    --popover-foreground: var(--clr-forest);
+
+    --primary: var(--clr-forest);
+    --primary-foreground: var(--clr-cream);
+
+    --secondary: var(--clr-leaf);
+    --secondary-foreground: var(--clr-cream);
+
     --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: var(--clr-forest), 0.65;
+
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+
+    --destructive: var(--clr-rose);
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+
+    --border: var(--clr-forest), 0.5;
+
+    --input: var(--clr-forest), 0.5;
+
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -31,24 +63,35 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --background: var(--clr-emerald);
+    --foreground: var(--clr-sand);
+
+    --hero-accent: var(--clr-moss);
+
+    --card: var(--clr-emerald);
+    --card-foreground: var(--clr-sand);
+
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+
+    --primary: var(--clr-amber);
+    --primary-foreground: var(--clr-emerald);
+
+    --secondary: var(--clr-moss);
     --secondary-foreground: 0 0% 98%;
+
     --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    --muted-foreground: var(--clr-sand), 0.5;
+
     --accent: 0 0% 14.9%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+
+    --destructive: var(--clr-rose);
+    --destructive-foreground: var(--clr-cream);
+
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
+
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
