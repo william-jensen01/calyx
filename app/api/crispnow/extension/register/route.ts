@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 // delete api-token for extension
 // note: will delete the token used to authorize request
 export const DELETE = withAuth(
-  async (request: NextRequest, authContext: AuthContext) => {
+  async (_, authContext: AuthContext) => {
     try {
       if (authContext.api_token_id) {
         await deleteAPIToken(authContext.api_token_id);
