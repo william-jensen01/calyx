@@ -203,7 +203,21 @@ export async function deleteAPIToken(
 
   const { error } = await client.from("api_tokens").delete().eq("id", tokenId);
 
-  if (error) throw new Error("Failed to delete API token");
+  if (error) {
+    // Check specific error codes
+    if (error.code === "PGRST116" || error.code === "42501") {
+      throw new Error("Unauthorized to delete this token");
+    }
+    if (error.code === "23503") {
+      throw new Error("Cannot delete token: still in use");
+    }
+    if (error.code === "22P02") {
+      throw new Error("Invalid token ID format");
+    }
+
+    // throw new Error("Failed to delete API token");
+    throw new Error(`Database error: ${error.message}`);
+  }
 }
 
 // MARK: Cleanup Expired/Revoked Tokens

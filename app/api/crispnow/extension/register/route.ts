@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAPIToken } from "@/lib/auth/api-tokens";
+import { AuthContext, withAuth } from "@/lib/auth/api-tokens/middleware";
+import { deleteAPIToken } from "@/lib/db/api-tokens";
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,3 +46,26 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// delete api-token for extension
+// note: will delete the token used to authorize request
+export const DELETE = withAuth(
+  async (request: NextRequest, authContext: AuthContext) => {
+    try {
+      if (authContext.api_token_id) {
+        await deleteAPIToken(authContext.api_token_id);
+      }
+
+      return NextResponse.json({ message: "Extension unregistered" });
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error:
+            error instanceof Error ? error.message : "Unregistration failed",
+        },
+        { status: 500 }
+      );
+    }
+  },
+  { requireScope: "events:write" }
+);
